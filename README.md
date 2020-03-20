@@ -3,7 +3,7 @@ This repository is for evaluation purpose only
 
 The yaml code for API definition is available in _yaml-resolved/swagger.yaml_
 
-The link for the SwaggerHub specification is https://app.swaggerhub.com/apis/EshwarMuthu/Project-VAP/1.0.0#/
+The link for the OpenAPI specification is https://app.swaggerhub.com/apis/EshwarMuthu/Project-VAP/1.0.0#/
 
 This Product/inventory Management System(PMS) has four entities
   - products
