@@ -11,4 +11,4 @@ This Product/inventory Management System(PMS) has four entities
   - order
   - report
 
-The API definitions are designed keeping in mind that this PMS can be used in any e-commerce marketplaces. This PMS acts as a backbone in delivering the right goods to the customer by getting the order details of the customer. This PMS can be used effectively in warehouses were the products are stored for the marketplaces. This PMS is also useful in managing the stocks in the inventory. This is a brief note on the API specification that was designed. Furthur details and functionalities of the PMS can be found in the link provided above.
+The API definitions are designed keeping in mind that this PMS can be used in any e-commerce marketplaces. This PMS acts as a backbone in delivering the right goods to the customer by getting the order details of the customer.  This PMS can be used effectively in managing the stocks in the warehouses. This PMS can also be used to generate the sales oriented reports. This is a brief note on the API specification that was designed. Furthur details and functionalities of the PMS can be found in the link provided above.
