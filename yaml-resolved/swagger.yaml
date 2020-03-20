@@ -1,0 +1,1531 @@
+openapi: 3.0.0
+info:
+  title: Product/Inventory Management System VAP
+  description: This API definition is intended to showcase the use of functionalites
+    of a product/inventory management system.
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/EshwarMuthu/Project-VAP/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /products/{category}:
+    get:
+      tags:
+      - products
+      description: This endpoint helps to get the products and their availability
+        when the category is specified.
+      parameters:
+      - name: category
+        in: path
+        description: The category for which the user needs to know the products present
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Clothing
+      responses:
+        "200":
+          description: Sends the array of object as a successful response. Each element
+            in an array will contain the name, id, brand, sellerID, availability status,
+            rackID, item-count and price of the product.
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                - productName: Formal shirt
+                  productID: p1001
+                  productBrand: Van heusen
+                  sellerID: s1001
+                  instock: true
+                  stockCount: 60
+                  rackID: r1001
+                  price: 2000
+                - productName: Semi-formal shirt
+                  productID: p1002
+                  productBrand: John miller
+                  sellerID: s1003
+                  instock: false
+                  stockCount: 0
+                  rackID: r1002
+                  price: 1000
+                items:
+                  $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /products/category/addnew:
+    post:
+      tags:
+      - products
+      description: This endpoint is helpful in adding a new category to the warehouse.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+        required: true
+      responses:
+        "200":
+          description: Sends a success message when the response is successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /products/category/modify:
+    put:
+      tags:
+      - products
+      description: This endpoint will help in modifying the name of the existing category.
+      parameters:
+      - name: existing
+        in: query
+        description: This has the existing name of the category
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Optics
+      - name: new
+        in: query
+        description: This has the new name of the category
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Visual gear
+      responses:
+        "200":
+          description: Sends a message that the category's name is changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /products/category/remove:
+    delete:
+      tags:
+      - products
+      description: Use this endpoint to delete a specific category along with its
+        products.
+      parameters:
+      - name: categoryName
+        in: query
+        description: The name of the category that is to be deleted
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Furnitures
+      responses:
+        "200":
+          description: A message will be delivered with the context that the resource
+            got deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /products/category/merge:
+    put:
+      tags:
+      - products
+      description: This endpoint merges two category as one fresh category.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_1'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /products/shift:
+    post:
+      tags:
+      - products
+      description: When some products are needed to get shifted from one warehouse
+        to another warehouse we can make use of this endpoint. This endpoint may be
+        called when the user selects the items to get shifted to destination warehouse
+        and submits. The destination warehouse's location can be obtained by geocoding
+        the address of the selected destination in the client.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+      responses:
+        "200":
+          description: On success it returns the rackIDs of the destination warehouse
+            where the products can be stored.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+              - r1001
+              - r1002
+              - r1004
+              - r1009
+  /sellers/{sellerID}/products/add:
+    put:
+      tags:
+      - sellers
+      parameters:
+      - name: sellerID
+        in: path
+        description: The ID of the seller for whom the new products must be added.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: s1002
+      - name: productID
+        in: query
+        description: The productID for which the stocks need to get updated
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: p1003
+      - name: quantity
+        in: query
+        description: The number of items that are being appended to the rack
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          example: 50
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+    post:
+      tags:
+      - sellers
+      description: Use this endpoint to add a new product of a particular category
+        in the inventory. This product takes a specific place in the product rack
+        inside of the warehouse.
+      parameters:
+      - name: sellerID
+        in: path
+        description: The ID of the seller for whom the new products must be added.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: s1002
+      requestBody:
+        description: Provide the details of the new product that is about to be stored.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_3'
+        required: true
+      responses:
+        "200":
+          description: If the operation is successful then it returns the rackID where
+            the product can be stored.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_6'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /sellers:
+    get:
+      tags:
+      - sellers
+      description: This endpoint will output the list of sellers.
+      parameters:
+      - name: orderby
+        in: query
+        description: This provides the order in which the list must be given to the
+          client. This is not mandatory and if this is not mentioned the server may
+          respond in chronological order of onboarding of sellers.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          description: This order is based on the seller name
+          example: asc
+          enum:
+          - asc
+          - desc
+      responses:
+        "200":
+          description: Retrieve all the sellers' details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/sellerDetails'
+              examples:
+                sellerDetailsListExample:
+                  $ref: '#/components/examples/sellerDetailsListExample'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /sellers/{sellerID}:
+    get:
+      tags:
+      - sellers
+      parameters:
+      - name: sellerID
+        in: path
+        description: The ID of the seller for whom the new products must be added.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: s1002
+      responses:
+        "200":
+          description: Retrieve the details of a particular seller
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sellerDetails'
+              examples:
+                sellerDetailsExample:
+                  $ref: '#/components/examples/sellerDetailsExample'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /sellers/onboard:
+    post:
+      tags:
+      - sellers
+      description: Use this endpoint to add a new seller to the system. In realtime
+        when a new seller onboards and make a business deal with the company he can
+        be added to the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/sellerDetails'
+            examples:
+              sellerDetailsExample:
+                $ref: '#/components/examples/sellerDetailsExample'
+        required: true
+      responses:
+        "200":
+          description: New seller added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_7'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /sellers/{sellerID}/modify:
+    put:
+      tags:
+      - sellers
+      parameters:
+      - name: sellerID
+        in: path
+        description: The ID of the seller for whom the new products must be added.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: s1002
+      - name: attribute
+        in: query
+        description: The property that is to be altered
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: sellerPhone
+      - name: value
+        in: query
+        description: The new value for the property
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "9876543210"
+      responses:
+        "200":
+          description: The seller's attribute modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_8'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /sellers/renew:
+    post:
+      tags:
+      - sellers
+      description: This endpoint will be helpful in notifying the seller about his
+        subscription when it is about to end.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              example:
+              - sellerID: s1002
+                sellerPhone: 1.23456789E8
+                sellerEmail: abc@abc.com
+              - sellerID: s1003
+                sellerPhone: 2039485716
+                sellerEmail: bbb@bbb.com
+              items:
+                $ref: '#/components/schemas/body_4'
+      responses:
+        "200":
+          description: Notifying the sellers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_9'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /sellers/remove:
+    delete:
+      tags:
+      - sellers
+      description: Use this endpoint to delete a seller
+      parameters:
+      - name: sellerID
+        in: query
+        description: The sellerID of the seller to be deleted
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: s1001
+      responses:
+        "200":
+          description: A message is given to client stating that the seller is deleted
+            and
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_10'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /order/neworder:
+    post:
+      tags:
+      - order
+      description: Use this endpoint to create a new order. This new order can also
+        be referred as stock outflow.
+      requestBody:
+        description: The client must send the order details to the server. The prodQuant
+          property in the content provide information of the products that the customer
+          needs.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderDetails'
+            examples:
+              orderDetailsExample:
+                $ref: '#/components/examples/orderDetailsExample'
+        required: true
+      responses:
+        "200":
+          description: The server sends the orderID and the totalAmount to the client.
+            The client can store this orderID and work with other order related operations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_11'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /order/status:
+    put:
+      tags:
+      - order
+      description: Use this endpoint to modify the status of the order.
+      requestBody:
+        description: Send the orderID along with the current status of the order as
+          the request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_5'
+        required: true
+      responses:
+        "200":
+          description: The server sends a success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_12'
+              example:
+                result: Status altered successfully
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /order/route:
+    get:
+      tags:
+      - order
+      description: Use this endpoint to know the route in which the travels. This
+        endpoint might be helpful for the logistic divison
+      parameters:
+      - name: type
+        in: query
+        description: Defines the type in which the user needs to get the route of
+          the order. The value 'all' provides with the full information, 'currentDestination'
+          gives where the product is currently located, 'nextDestination' gives where
+          the product needs to go next and 'customerDestination' gives the final reachable
+          hub
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: all
+          enum:
+          - all
+          - currentDestination
+          - nextDestination
+          - customerDestination
+      responses:
+        "200":
+          description: Provides with the information based upon the type of search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_13'
+              examples:
+                allExample:
+                  value:
+                    currentDestination: Chennai
+                    nextDestination: Bangalore
+                    customerDestination: Mysore
+                currentDestinationExample:
+                  value:
+                    currentDestination: Chennai
+                nextDestinationExample:
+                  value:
+                    nextDestination: Bangalore
+                customerDestinationExample:
+                  value:
+                    customerDestination: Mysore
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /order/returnInspect:
+    put:
+      tags:
+      - order
+      description: This is another way of stock inflow. Once the customer returns
+        a product and when it reaches the inventory, we will put the product in the
+        same rack. Assuming that manual validation of the product is made and it is
+        not been damaged then we can procees with this operation.
+      requestBody:
+        description: Provide the orderID, productID, quantity to the server.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderReturnInspect'
+        required: true
+      responses:
+        "200":
+          description: Returns the rackID of the product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_14'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+    post:
+      tags:
+      - order
+      description: After the manual validation of the product and if it is damaged
+        then we can send it to the seller. This creates a new instance in the Damaged
+        Product Stack(DPS)
+      requestBody:
+        description: Provide the orderID, productID, quantity to the server.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderReturnInspect'
+      responses:
+        "200":
+          description: Returns the sellerID and the Damaged Product Stack(DPS)id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_15'
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /reports/master:
+    get:
+      tags:
+      - reports
+      description: Get to know the summary of all the products
+      parameters:
+      - name: type
+        in: query
+        description: It is the period interval for the server to validate
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: yearly
+          enum:
+          - daily
+          - weekly
+          - monthly
+          - yearly
+      - name: value
+        in: query
+        description: It is the valid value for the period interval. This value must
+          be validated in the frontend before the API call.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 1998-2000
+      responses:
+        "200":
+          description: Lists out the products along with its number of units sales
+            details. It also provides a PDF document that can be downloaded by the
+            client
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_16'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /reports/abcAnalysis:
+    get:
+      tags:
+      - reports
+      description: Get to know the most and the least valuable products. The number
+        of times the particular product gets sold without being return might act as
+        the criteria of validating the products
+      parameters:
+      - name: type
+        in: query
+        description: It is the period interval for the server to validate
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: yearly
+          enum:
+          - daily
+          - weekly
+          - monthly
+          - yearly
+      - name: value
+        in: query
+        description: It is the valid value for the period interval. This value must
+          be validated in the frontend before the API call.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 1998-2000
+      responses:
+        "200":
+          description: It returns the data in a JSON as well as a PDF file format
+            that can be downloaded to the system
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_17'
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /reports/averageSales:
+    get:
+      tags:
+      - reports
+      description: Retrieve the average sales made for every product or every seller
+      parameters:
+      - name: type
+        in: query
+        description: It is the period interval for the server to validate
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: yearly
+          enum:
+          - daily
+          - weekly
+          - monthly
+          - yearly
+      - name: value
+        in: query
+        description: It is the valid value for the period interval. This value must
+          be validated in the frontend before the API call.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 1998-2000
+      - name: entity
+        in: query
+        description: Mentions whether to validate for products or for sellers
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: products
+          enum:
+          - products
+          - sellers
+      responses:
+        "200":
+          description: Gives a list of the provided entity and the average sales for
+            each of them. It also gives a PDF file with the data in it.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - type: object
+                    properties:
+                      productID:
+                        type: string
+                      averageSales:
+                        type: integer
+                  - type: object
+                    properties:
+                      sellerID:
+                        type: string
+                      averageSales:
+                        type: integer
+              examples:
+                ifProducts:
+                  value:
+                  - productID: p1001
+                    averageSales: 25000
+                  - productID: p1002
+                    averageSales: 8000
+                  - productID: p1003
+                    averageSales: 17000
+                ifSellers:
+                  value:
+                  - sellerID: s1001
+                    averageSales: 5000
+                  - sellerID: s1002
+                    averageSales: 9000
+                  - sellerID: s1003
+                    averageSales: 35000
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /reports/compareLocations:
+    get:
+      tags:
+      - reports
+      description: Compare the number of units available between several other warhouses
+      parameters:
+      - name: locations
+        in: query
+        description: Mentions whether to validate for products or for sellers
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - Chennai
+            - Bangalore
+            - Hyderabad
+            - Mumbai
+            - Delhi
+        examples:
+          locations:
+            value:
+            - Chennai
+            - Bangalore
+      responses:
+        "200":
+          description: Gives the available units for every warehouse. It also responds
+            with a PDF file with all the data in it.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/inline_response_200_18'
+              example:
+              - productID: p1001
+                unitsAvailable:
+                  Chennai: 20
+                  Bangalore: 20
+              - productID: p1002
+                unitsAvailable:
+                  Chennai: 40
+                  Bangalore: 40
+              - productID: p1003
+                unitsAvailable:
+                  Chennai: 60
+                  Bangalore: 60
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: The client sent an request with invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+        "404":
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+components:
+  schemas:
+    sellerDetails:
+      type: object
+      properties:
+        sellerName:
+          type: string
+        sellerID:
+          type: string
+        sellerEmail:
+          type: string
+        sellerPhone:
+          type: integer
+        sellerAddress:
+          type: string
+        sellerCity:
+          type: string
+        sellerZipcode:
+          type: integer
+        sellerActive:
+          type: boolean
+          description: This property defines whether a seller is currently active
+            which means he has a business deal with the company.
+    orderDetails:
+      type: object
+      properties:
+        customerName:
+          type: string
+        customerAddress:
+          type: string
+        customerCity:
+          type: string
+        customerPhone:
+          type: integer
+        customerZipcode:
+          type: integer
+        prodQuant:
+          type: array
+          description: This property provides an array of objects where each object
+            has a
+          items:
+            type: object
+            additionalProperties:
+              type: integer
+        orderStatus:
+          type: string
+          enum:
+          - ordered
+          - confirmed
+          - denied
+          - dispatched
+          - reached nearest hub
+          - delivered
+          - returned
+    orderReturnInspect:
+      type: object
+      properties:
+        orderID:
+          type: string
+        productID:
+          type: string
+        quantity:
+          type: integer
+      example:
+        orderID: ord1001
+        productID: p1002
+        quantity: 1
+    inline_response_200:
+      type: object
+      properties:
+        productName:
+          type: string
+        productID:
+          type: string
+        productBrand:
+          type: string
+        sellerID:
+          type: string
+        instock:
+          type: boolean
+          description: If this property is true then it determines that the stock
+            is available. Orelse stock is not available.
+        stockCount:
+          type: integer
+          description: Number of available items for that product.
+        rackID:
+          type: string
+          description: Gives the position where it can be found in the warehouse
+        price:
+          type: integer
+    inline_response_400:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+      example:
+        errorMessage: The client sent an request with invalid syntax.
+    inline_response_404:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+      example:
+        errorMessage: The server cannot find the requested resource.
+    body:
+      type: object
+      properties:
+        newCategory:
+          type: string
+          description: Send the name of the new category
+          example: Books and magazines
+    inline_response_200_1:
+      type: object
+      properties:
+        message:
+          type: string
+          example: New category added
+    inline_response_200_2:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Category modified
+    inline_response_200_3:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Category deleted along with its items.
+    body_1:
+      type: object
+      properties:
+        category1:
+          type: string
+        category2:
+          type: string
+        categoryResult:
+          type: string
+          description: Name of the resulting category.
+      example:
+        category1: Toys
+        category2: Kids wear
+        categoryResult: Kids
+    inline_response_200_4:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Categories merged successfully
+    productsshift_destinationWarehouse:
+      type: object
+      properties:
+        latitude:
+          type: number
+        longitude:
+          type: number
+    productsshift_shiftingItems:
+      type: object
+      properties:
+        productID:
+          type: string
+        productSize:
+          type: string
+          enum:
+          - XS
+          - S
+          - M
+          - L
+          - XL
+    body_2:
+      type: object
+      properties:
+        destinationWarehouse:
+          $ref: '#/components/schemas/productsshift_destinationWarehouse'
+        shiftingItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/productsshift_shiftingItems'
+      example:
+        destinationWarehouse:
+          latitude: 13.067439
+          longitude: 80.237617
+        shiftingItems:
+        - productID: p1001
+          productSize: S
+        - productID: p1005
+          productSize: M
+        - productID: p1008
+          productSize: XS
+        - productID: p1088
+          productSize: XL
+    inline_response_200_5:
+      type: object
+      properties:
+        stockCount:
+          type: integer
+          description: The total number of items currently in the rack.
+          example: 150
+    body_3:
+      type: object
+      properties:
+        category:
+          type: string
+        productBrand:
+          type: string
+        productName:
+          type: string
+        productID:
+          type: string
+        price:
+          type: integer
+        instock:
+          type: boolean
+        stockCount:
+          type: integer
+        productSize:
+          type: string
+          description: This property is irrespective of the category. This property
+            is needed to define the amount of space needed to fit the product in the
+            rack. The server may respond with the suitable rack based upon this property.
+          enum:
+          - XS
+          - S
+          - M
+          - L
+          - XL
+      example:
+        category: Electronics
+        productBrand: Apple
+        productName: Airpods Pro
+        productID: p1003
+        price: 20000
+        instock: true
+        stockCount: 100
+        productSize: XS
+    inline_response_200_6:
+      type: object
+      properties:
+        rackID:
+          type: string
+      example:
+        rackID: r1003
+    inline_response_200_7:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: Ready to add products
+    inline_response_200_8:
+      type: object
+      properties:
+        message:
+          type: string
+          example: success
+    body_4:
+      type: object
+      properties:
+        sellerID:
+          type: string
+        sellerPhone:
+          type: integer
+        sellerEmail:
+          type: string
+    inline_response_200_9:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Notification sent to the sellers
+    inline_response_200_10:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The specified seller is deleted
+    inline_response_200_11:
+      type: object
+      properties:
+        orderID:
+          type: string
+        totalAmount:
+          type: integer
+      example:
+        orderID: ord1001
+        totalAmount: 40000
+    body_5:
+      required:
+      - orderID
+      - orderStatus
+      example:
+        orderStatus: dispatched
+        orderID: ord1001
+      allOf:
+      - $ref: '#/components/schemas/orderDetails'
+      - type: object
+        properties:
+          orderID:
+            type: string
+    inline_response_200_12:
+      type: object
+      properties:
+        result:
+          type: string
+    inline_response_200_13:
+      oneOf:
+      - type: object
+        properties:
+          currentDestination:
+            type: string
+          nextDestination:
+            type: string
+          customerDestination:
+            type: string
+      - type: object
+        properties:
+          currentDestination:
+            type: string
+      - type: object
+        properties:
+          nextDestination:
+            type: string
+      - type: object
+        properties:
+          customerDestination:
+            type: string
+    inline_response_200_14:
+      type: object
+      properties:
+        rackID:
+          type: string
+      example:
+        rackID: r1001
+    inline_response_200_15:
+      type: object
+      properties:
+        sellerID:
+          type: string
+        dpsID:
+          type: string
+      example:
+        sellerID: s1001
+        dpsID: dps1010
+    inline_response_200_16:
+      type: object
+      properties:
+        productID:
+          type: string
+        productName:
+          type: string
+        gotSold:
+          type: integer
+          description: Number of units sold
+        gotTransferred:
+          type: integer
+          description: Number of units transferred to another warehouse
+        gotReturned:
+          type: integer
+          description: Number of units returned
+        sellerID:
+          type: string
+        numberCustomersSold:
+          type: string
+          description: Number of customers to whom this product is sold
+      example:
+        productID: p1001
+        productName: Airpods Pro
+        gotSold: 20
+        gotTransferred: 5
+        gotReturned: 1
+        sellerID: s1001
+        numberCustomersSold: 16
+    inline_response_200_17:
+      type: object
+      properties:
+        mostValuable:
+          type: string
+        leastValuable:
+          type: string
+      example:
+        mostValuable: Airpods Pro
+        leastValuable: Formal Shirts
+    inline_response_200_18:
+      type: object
+      properties:
+        productID:
+          type: string
+        unitsAvailable:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: integer
+  responses:
+    badRequest:
+      description: The client sent an request with invalid syntax.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorMessage:
+                type: string
+            example:
+              errorMessage: The client sent an request with invalid syntax.
+    resourceNotFound:
+      description: The server cannot find the requested resource.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errorMessage:
+                type: string
+            example:
+              errorMessage: The server cannot find the requested resource.
+  parameters:
+    sellerIDParam:
+      name: sellerID
+      in: path
+      description: The ID of the seller for whom the new products must be added.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        example: s1002
+    reportsTypeParam:
+      name: type
+      in: query
+      description: It is the period interval for the server to validate
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: yearly
+        enum:
+        - daily
+        - weekly
+        - monthly
+        - yearly
+    reportsValueParam:
+      name: value
+      in: query
+      description: It is the valid value for the period interval. This value must
+        be validated in the frontend before the API call.
+      required: true
+      style: form
+      explode: true
+      schema:
+        type: string
+        example: 1998-2000
+  examples:
+    sellerDetailsExample:
+      value:
+        sellerName: ABC retailers
+        sellerEmail: abc@abc.com
+        sellerPhone: 1.23456789E8
+        sellerAddress: REST street, Vadapalani, Chennai.
+        sellerCity: Chennai
+        sellerZipcode: 600006
+        sellerActive: true
+    sellerDetailsListExample:
+      value:
+      - sellerName: ABC retailers
+        sellerEmail: abc@abc.com
+        sellerPhone: 1.23456789E8
+        sellerAddress: REST street, Vadapalani, Chennai.
+        sellerCity: Chennai
+        sellerZipcode: 100001
+        sellerActive: true
+      - sellerName: zzz retailers
+        sellerEmail: zzz@zzz.com
+        sellerPhone: 1029384756
+        sellerAddress: API street, Vadapalani, Chennai.
+        sellerCity: Chennai
+        sellerZipcode: 600006
+        sellerActive: false
+    orderDetailsExample:
+      value:
+        orderID: ord1001
+        customerName: Mr. Abcdefg Hijkl
+        customerAddress: No. 404, REST Apartments, API street, Swagger
+        customerCity: Swagger
+        customerPhone: 1122334455
+        customerZipcode: 654321
+        prodQuant:
+          p1001: 2
+          p1002: 3
+        orderStatus: ordered
